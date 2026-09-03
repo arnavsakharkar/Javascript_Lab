@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NEX AURA | Gym Admission Form</title>
+
+  <style>
+    :root {
+      --primary: #2563eb;
+      --primary-dark: #1d4ed8;
+      --text: #172033;
+      --muted: #6b7280;
+      --border: #d9dee8;
+      --error: #dc2626;
+      --success: #15803d;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      padding: 40px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #fff;
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+    }
+
+    .form-wrapper {
+      width: 100%;
+      max-width: 1000px;
+      overflow: hidden;
+      border: 1px solid #e5e7eb;
+      border-radius: 22px;
+      background: #fff;
+      box-shadow: 0 18px 50px rgba(15, 23, 42, 0.1);
+    }
+
+    .form-header {
+      padding: 42px;
+      border-bottom: 1px solid #e5e7eb;
+      background: linear-gradient(135deg, #eff6ff, #fff);
+    }
+
+    .brand {
+      margin-bottom: 12px;
+      color: var(--primary);
+      font-size: 15px;
+      font-weight: bold;
+      letter-spacing: 2px;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+      font-size: clamp(28px, 4vw, 42px);
+    }
+
+    .form-header p {
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    form {
+      padding: 38px 42px 42px;
+    }
+
+    .section-title {
+      margin-bottom: 20px;
+      font-size: 19px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 21px;
+      margin-bottom: 34px;
+    }
+
+    .form-group {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .full-width {
+      grid-column: 1 / -1;
+    }
+
+    label {
+      margin-bottom: 8px;
+      font-size: 14px;
+      font-weight: bold;
+    }
+
+    .required {
+      color: var(--error);
+    }
+
+    input,
+    select,
+    textarea {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      outline: none;
+      background: #fff;
+      color: var(--text);
+      font: inherit;
+      transition: 0.2s;
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    input:focus,
+    select:focus,
+    textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(37, 99, 235, 0.12);
+    }
+
+    input.valid,
+    select.valid,
+    textarea.valid {
+      border-color: var(--success);
+    }
+
+    input.invalid,
+    select.invalid,
+    textarea.invalid {
+      border-color: var(--error);
+    }
+
+    .error-message {
+      min-height: 18px;
+      margin-top: 6px;
+      color: var(--error);
+      font-size: 12px;
+    }
+
+    .plans {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+      margin-bottom: 8px;
+    }
+
+    .plan {
+      position: relative;
+    }
+
+    .plan input {
+      position: absolute;
+      opacity: 0;
+    }
+
+    .plan label {
+      display: block;
+      height: 100%;
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    .plan label strong {
+      display: block;
+      margin-bottom: 9px;
+      color: var(--text);
+      font-size: 16px;
+    }
+
+    .plan-price {
+      display: block;
+      margin-bottom: 8px;
+      color: var(--primary);
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .plan label small {
+      color: var(--muted);
+      font-weight: normal;
+      line-height: 1.4;
+    }
+
+    .plan input:checked + label {
+      border-color: var(--primary);
+      background: #eff6ff;
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    .plan input.invalid + label {
+      border-color: var(--error);
+    }
+
+    .checkbox-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .checkbox-row input {
+      width: 18px;
+      height: 18px;
+      margin-top: 2px;
+      accent-color: var(--primary);
+    }
+
+    .checkbox-row label {
+      margin: 0;
+      color: var(--muted);
+      font-weight: normal;
+      line-height: 1.5;
+    }
+
+    .form-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding-top: 28px;
+      border-top: 1px solid #e5e7eb;
+    }
+
+    .form-note {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    button {
+      padding: 14px 28px;
+      border: 0;
+      border-radius: 10px;
+      background: var(--primary);
+      color: white;
+      font: inherit;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: var(--primary-dark);
+      transform: translateY(-1px);
+    }
+
+    .success-message {
+      display: none;
+      margin-bottom: 24px;
+      padding: 14px;
+      border: 1px solid #bbf7d0;
+      border-radius: 10px;
+      background: #f0fdf4;
+      color: var(--success);
+      font-size: 14px;
+    }
+
+    .success-message.show {
+      display: block;
+    }
+
+    @media (max-width: 700px) {
+      .form-header,
+      form {
+        padding: 28px 22px;
+      }
+
+      .form-grid,
+      .plans {
+        grid-template-columns: 1fr;
+      }
+
+      .full-width {
+        grid-column: auto;
+      }
+
+      .form-footer {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      button {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="form-wrapper">
+    <header class="form-header">
+      <div class="brand">NEX AURA</div>
+      <h1>Gym Admission Form</h1>
+      <p>
+        Begin your fitness journey with NEX AURA.
+        Complete the form below to apply for membership.
+      </p>
+    </header>
+
+    <form id="gymForm" novalidate>
+      <div id="successMessage" class="success-message">
+        Your NEX AURA membership application was submitted successfully.
+      </div>
+
+      <h2 class="section-title">Personal Information</h2>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label for="fullName">
+            Full Name <span class="required">*</span>
+          </label>
+          <input
+            type="text"
+            id="fullName"
+            name="fullName"
+            placeholder="Enter your full name"
+          />
+          <small class="error-message" id="fullNameError"></small>
+        </div>
+
+        <div class="form-group">
+          <label for="email">
+            Email Address <span class="required">*</span>
+          </label>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            placeholder="you@example.com"
+          />
+          <small class="error-message" id="emailError"></small>
+        </div>
+
+        <div class="form-group">
+          <label for="phone">
+            Phone Number <span class="required">*</span>
+          </label>
+          <input
+            type="tel"
+            id="phone"
+            name="phone"
+            placeholder="Enter your phone number"
+          />
+          <small class="error-message" id="phoneError"></small>
+        </div>
+
+        <div class="form-group">
+          <label for="dateOfBirth">
+            Date of Birth <span class="required">*</span>
+          </label>
+          <input type="date" id="dateOfBirth" name="dateOfBirth" />
+          <small class="error-message" id="dateOfBirthError"></small>
+        </div>
+
+        <div class="form-group">
+          <label for="gender">
+            Gender <span class="required">*</span>
+          </label>
+          <select id="gender" name="gender">
+            <option value="">Select gender</option>
+            <option>Male</option>
+            <option>Female</option>
+            <option>Non-binary</option>
+            <option>Prefer not to say</option>
+          </select>
+          <small class="error-message" id="genderError"></small>
+        </div>
+
+        <div class="form-group">
+          <label for="emergencyContact">
+            Emergency Contact <span class="required">*</span>
+          </label>
+          <input
+            type="text"
+            id="emergencyContact"
+            name="emergencyContact"
+            placeholder="Name and phone number"
+          />
+          <small class="error-message" id="emergencyContactError"></small>
+        </div>
+
+        <div class="form-group">
+          <label for="height">
+            Height <span class="required">*</span>
+          </label>
+          <input
+            type="number"
+            id="height"
+            name="height"
+            placeholder="Height in centimetres"
+            min="100"
+            max="250"
+          />
+          <small class="error-message" id="heightError"></small>
+        </div>
+
+        <div class="form-group">
+          <label for="weight">
+            Weight <span class="required">*</span>
+          </label>
+          <input
+            type="number"
+            id="weight"
+            name="weight"
+            placeholder="Weight in kilograms"
+            min="25"
+            max="300"
+            step="0.1"
+          />
+          <small class="error-message" id="weightError"></small>
+        </div>
+
+        <div class="form-group">
+          <label for="goal">
+            Primary Fitness Goal <span class="required">*</span>
+          </label>
+          <select id="goal" name="goal">
+            <option value="">Select your primary goal</option>
+            <option value="Weight Loss">Weight Loss</option>
+            <option value="Muscle Gain">Muscle Gain</option>
+            <option value="Strength Training">Strength Training</option>
+            <option value="Improved Fitness">Improved Fitness</option>
+            <option value="Bodybuilding">Bodybuilding</option>
+            <option value="General Health">General Health</option>
+          </select>
+          <small class="error-message" id="goalError"></small>
+        </div>
+
+        <div class="form-group">
+          <label for="address">Home Address</label>
+          <textarea
+            id="address"
+            name="address"
+            placeholder="Enter your home address"
+          ></textarea>
+          <small class="error-message" id="addressError"></small>
+        </div>
+      </div>
+
+      <h2 class="section-title">Choose a Membership Plan</h2>
+
+      <div class="plans">
+        <div class="plan">
+          <input
+            type="radio"
+            id="basic"
+            name="membership"
+            value="Basic Plan - ₹999/month"
+          />
+          <label for="basic">
+            <strong>Basic Plan</strong>
+            <span class="plan-price">₹999</span>
+            <small>per month<br />Gym access during regular hours</small>
+          </label>
+        </div>
+
+        <div class="plan">
+          <input
+            type="radio"
+            id="premium"
+            name="membership"
+            value="Premium Plan - ₹1,499/month"
+          />
+          <label for="premium">
+            <strong>Premium Plan</strong>
+            <span class="plan-price">₹1,499</span>
+            <small>per month<br />Full gym access and group classes</small>
+          </label>
+        </div>
+
+        <div class="plan">
+          <input
+            type="radio"
+            id="elite"
+            name="membership"
+            value="Elite Plan - ₹2,499/month"
+          />
+          <label for="elite">
+            <strong>Elite Plan</strong>
+            <span class="plan-price">₹2,499</span>
+            <small>per month<br />Personal training and premium benefits</small>
+          </label>
+        </div>
+      </div>
+
+      <small class="error-message" id="membershipError"></small>
+
+      <div class="checkbox-row">
+        <input type="checkbox" id="terms" name="terms" />
+        <label for="terms">
+          I agree to the NEX AURA gym rules, membership terms,
+          and health declaration.
+          <span class="required">*</span>
+        </label>
+      </div>
+
+      <small class="error-message" id="termsError"></small>
+
+      <div class="form-footer">
+        <p class="form-note">
+          Fields marked with <span class="required">*</span> are required.
+        </p>
+        <button type="submit">Submit Application</button>
+      </div>
+    </form>
+  </main>
+
+  <script>
+    const form = document.getElementById("gymForm");
+    const successMessage = document.getElementById("successMessage");
+
+    const fields = {
+      fullName: document.getElementById("fullName"),
+      email: document.getElementById("email"),
+      phone: document.getElementById("phone"),
+      dateOfBirth: document.getElementById("dateOfBirth"),
+      gender: document.getElementById("gender"),
+      emergencyContact: document.getElementById("emergencyContact"),
+      height: document.getElementById("height"),
+      weight: document.getElementById("weight"),
+      goal: document.getElementById("goal"),
+      terms: document.getElementById("terms")
+    };
+
+    function setError(field, message) {
+      field.classList.add("invalid");
+      field.classList.remove("valid");
+
+      const error = document.getElementById(`${field.id}Error`);
+      if (error) error.textContent = message;
+    }
+
+    function setValid(field) {
+      field.classList.remove("invalid");
+      field.classList.add("valid");
+
+      const error = document.getElementById(`${field.id}Error`);
+      if (error) error.textContent = "";
+    }
+
+    function validateField(field) {
+      const value = field.value.trim();
+
+      if (field === fields.fullName) {
+        if (value.length < 3) {
+          setError(field, "Enter at least 3 characters.");
+          return false;
+        }
+
+        if (!/^[a-zA-Z\s'-]+$/.test(value)) {
+          setError(field, "Name can only contain letters.");
+          return false;
+        }
+      }
+
+      if (field === fields.email) {
+        if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+          setError(field, "Enter a valid email address.");
+          return false;
+        }
+      }
+
+      if (field === fields.phone) {
+        if (!/^[0-9+\-\s()]{7,20}$/.test(value)) {
+          setError(field, "Enter a valid phone number.");
+          return false;
+        }
+      }
+
+      if (field === fields.dateOfBirth && !value) {
+        setError(field, "Select your date of birth.");
+        return false;
+      }
+
+      if (field === fields.gender && !value) {
+        setError(field, "Select your gender.");
+        return false;
+      }
+
+      if (field === fields.emergencyContact && value.length < 5) {
+        setError(field, "Enter an emergency contact.");
+        return false;
+      }
+
+      if (field === fields.height) {
+        const height = Number(value);
+
+        if (!value || height < 100 || height > 250) {
+          setError(field, "Height must be between 100 and 250 cm.");
+          return false;
+        }
+      }
+
+      if (field === fields.weight) {
+        const weight = Number(value);
+
+        if (!value || weight < 25 || weight > 300) {
+          setError(field, "Weight must be between 25 and 300 kg.");
+          return false;
+        }
+      }
+
+      if (field === fields.goal && !value) {
+        setError(field, "Select your primary fitness goal.");
+        return false;
+      }
+
+      if (field === fields.terms) {
+        const error = document.getElementById("termsError");
+
+        if (!field.checked) {
+          error.textContent = "You must accept the terms.";
+          return false;
+        }
+
+        error.textContent = "";
+        return true;
+      }
+
+      setValid(field);
+      return true;
+    }
+
+    function validateMembership() {
+      const selected = document.querySelector(
+        'input[name="membership"]:checked'
+      );
+
+      const error = document.getElementById("membershipError");
+      const plans = document.querySelectorAll(
+        'input[name="membership"]'
+      );
+
+      if (!selected) {
+        error.textContent = "Please select a membership plan.";
+
+        plans.forEach((plan) => plan.classList.add("invalid"));
+        return false;
+      }
+
+      error.textContent = "";
+      plans.forEach((plan) => plan.classList.remove("invalid"));
+      return true;
+    }
+
+    // Live checks while typing
+    Object.values(fields).forEach((field) => {
+      const eventName =
+        field.type === "checkbox" ||
+        field.tagName === "SELECT" ||
+        field.type === "date"
+          ? "change"
+          : "input";
+
+      field.addEventListener(eventName, () => {
+        validateField(field);
+      });
+    });
+
+    // Live membership plan validation
+    document
+      .querySelectorAll('input[name="membership"]')
+      .forEach((plan) => {
+        plan.addEventListener("change", validateMembership);
+      });
+
+    // Validate the complete form before submission
+    form.addEventListener("submit", function (event) {
+      event.preventDefault();
+
+      const fieldsAreValid = Object.values(fields)
+        .map(validateField)
+        .every(Boolean);
+
+      const membershipIsValid = validateMembership();
+
+      if (!fieldsAreValid || !membershipIsValid) {
+        successMessage.classList.remove("show");
+
+        const firstInvalid = form.querySelector(".invalid");
+
+        if (firstInvalid) {
+          firstInvalid.focus();
+        }
+
+        return;
+      }
+
+      const formData = new FormData(form);
+
+      console.log({
+        gymName: "NEX AURA",
+        fullName: formData.get("fullName"),
+        email: formData.get("email"),
+        phone: formData.get("phone"),
+        dateOfBirth: formData.get("dateOfBirth"),
+        gender: formData.get("gender"),
+        emergencyContact: formData.get("emergencyContact"),
+        height: `${formData.get("height")} cm`,
+        weight: `${formData.get("weight")} kg`,
+        primaryGoal: formData.get("goal"),
+        address: formData.get("address"),
+        membershipPlan: formData.get("membership"),
+        termsAccepted: formData.get("terms") === "on"
+      });
+
+      successMessage.classList.add("show");
+
+      form.reset();
+
+      Object.values(fields).forEach((field) => {
+        field.classList.remove("valid", "invalid");
+      });
+
+      document.querySelectorAll(".error-message").forEach((error) => {
+        error.textContent = "";
+      });
+    });
+  </script>
+</body>
+</html>
