@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Experiment To-Do List</title>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: "Segoe UI", Tahoma, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      background: #ffffff;
+      color: #1f2937;
+    }
+
+    .todo-wrapper {
+      width: 100%;
+      max-width: 650px;
+      background: #ffffff;
+      border: 1px solid #e5e7eb;
+      border-radius: 22px;
+      padding: 30px;
+      box-shadow: 0 15px 45px rgba(15, 23, 42, 0.1);
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 25px;
+    }
+
+    .header h1 {
+      font-size: 32px;
+      color: #111827;
+      margin-bottom: 8px;
+    }
+
+    .header p {
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    .input-area {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .input-area input {
+      flex: 1;
+      padding: 14px 16px;
+      border: 1px solid #d1d5db;
+      border-radius: 12px;
+      outline: none;
+      font-size: 15px;
+      transition: 0.3s;
+    }
+
+    .input-area input:focus {
+      border-color: #6366f1;
+      box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+    }
+
+    button {
+      border: none;
+      cursor: pointer;
+      transition: 0.25s ease;
+    }
+
+    .add-btn {
+      padding: 0 20px;
+      border-radius: 12px;
+      background: #6366f1;
+      color: #ffffff;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    .add-btn:hover {
+      background: #4f46e5;
+      transform: translateY(-2px);
+    }
+
+    .top-bar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 15px;
+      background: #f8fafc;
+      border-radius: 12px;
+      padding: 13px 15px;
+      margin-bottom: 18px;
+    }
+
+    .task-counter {
+      color: #64748b;
+      font-size: 14px;
+    }
+
+    .clear-btn {
+      background: transparent;
+      color: #ef4444;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .clear-btn:hover {
+      color: #b91c1c;
+    }
+
+    .task-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 15px;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      background: #ffffff;
+      animation: slideIn 0.3s ease;
+    }
+
+    .task-item:hover {
+      border-color: #c7d2fe;
+      box-shadow: 0 5px 15px rgba(99, 102, 241, 0.08);
+    }
+
+    .task-check {
+      width: 20px;
+      height: 20px;
+      accent-color: #6366f1;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+
+    .task-text {
+      flex: 1;
+      font-size: 15px;
+      word-break: break-word;
+      color: #1f2937;
+    }
+
+    /*
+      Completed task par koi line-through nahi hai.
+      Isliye completed experiments normal text mein dikhenge.
+    */
+
+    .status-badge {
+      padding: 6px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .status-ongoing {
+      color: #92400e;
+      background: #fef3c7;
+    }
+
+    .status-completed {
+      color: #166534;
+      background: #dcfce7;
+    }
+
+    .actions {
+      display: flex;
+      gap: 7px;
+    }
+
+    .action-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      font-size: 14px;
+      color: #ffffff;
+    }
+
+    .edit-btn {
+      background: #f59e0b;
+    }
+
+    .edit-btn:hover {
+      background: #d97706;
+    }
+
+    .delete-btn {
+      background: #ef4444;
+    }
+
+    .delete-btn:hover {
+      background: #dc2626;
+    }
+
+    .empty-message {
+      text-align: center;
+      padding: 35px 10px;
+      color: #9ca3af;
+      font-size: 15px;
+    }
+
+    @keyframes slideIn {
+      from {
+        opacity: 0;
+        transform: translateY(8px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @media (max-width: 560px) {
+      .todo-wrapper {
+        padding: 22px 17px;
+      }
+
+      .header h1 {
+        font-size: 27px;
+      }
+
+      .input-area {
+        flex-direction: column;
+      }
+
+      .add-btn {
+        padding: 13px;
+      }
+
+      .top-bar {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .task-item {
+        align-items: flex-start;
+        flex-wrap: wrap;
+        padding: 13px;
+      }
+
+      .task-text {
+        min-width: calc(100% - 38px);
+      }
+
+      .status-badge {
+        margin-left: 32px;
+      }
+
+      .actions {
+        margin-left: auto;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <main class="todo-wrapper">
+
+    <header class="header">
+      <h1>My Experiment List</h1>
+      <p>Track your experiments easily.</p>
+    </header>
+
+    <form class="input-area" id="todoForm">
+      <input
+        type="text"
+        id="todoInput"
+        placeholder="Enter experiment name..."
+        autocomplete="off"
+      />
+
+      <button type="submit" class="add-btn" id="submitBtn">
+        Add Experiment
+      </button>
+    </form>
+
+    <div class="top-bar">
+      <span class="task-counter" id="taskCounter">
+        0 experiments ongoing
+      </span>
+
+      <button class="clear-btn" id="clearCompletedBtn">
+        Clear Completed
+      </button>
+    </div>
+
+    <ul class="task-list" id="taskList"></ul>
+
+    <div class="empty-message" id="emptyMessage">
+      No experiments yet. Add your first experiment!
+    </div>
+
+  </main>
+
+  <script>
+    const todoForm = document.getElementById("todoForm");
+    const todoInput = document.getElementById("todoInput");
+    const submitBtn = document.getElementById("submitBtn");
+    const taskList = document.getElementById("taskList");
+    const taskCounter = document.getElementById("taskCounter");
+    const emptyMessage = document.getElementById("emptyMessage");
+    const clearCompletedBtn = document.getElementById("clearCompletedBtn");
+
+    let tasks = JSON.parse(localStorage.getItem("experimentTasks")) || [];
+    let editTaskId = null;
+
+    function saveTasks() {
+      localStorage.setItem("experimentTasks", JSON.stringify(tasks));
+    }
+
+    function renderTasks() {
+      taskList.innerHTML = "";
+
+      if (tasks.length === 0) {
+        emptyMessage.style.display = "block";
+      } else {
+        emptyMessage.style.display = "none";
+      }
+
+      tasks.forEach(function(task) {
+        const listItem = document.createElement("li");
+        listItem.className = "task-item";
+
+        const statusClass = task.completed
+          ? "status-completed"
+          : "status-ongoing";
+
+        const statusText = task.completed
+          ? "Completed"
+          : "Ongoing";
+
+        listItem.innerHTML = `
+          <input
+            type="checkbox"
+            class="task-check"
+            ${task.completed ? "checked" : ""}
+            data-id="${task.id}"
+            title="Change status"
+          />
+
+          <span class="task-text">
+            ${escapeHTML(task.text)}
+          </span>
+
+          <span class="status-badge ${statusClass}">
+            ${statusText}
+          </span>
+
+          <div class="actions">
+            <button
+              class="action-btn edit-btn"
+              data-action="edit"
+              data-id="${task.id}"
+              title="Edit Experiment"
+            >
+              ✏️
+            </button>
+
+            <button
+              class="action-btn delete-btn"
+              data-action="delete"
+              data-id="${task.id}"
+              title="Delete Experiment"
+            >
+              🗑️
+            </button>
+          </div>
+        `;
+
+        taskList.appendChild(listItem);
+      });
+
+      updateCounter();
+    }
+
+    function updateCounter() {
+      const ongoingTasks = tasks.filter(function(task) {
+        return !task.completed;
+      }).length;
+
+      const completedTasks = tasks.filter(function(task) {
+        return task.completed;
+      }).length;
+
+      taskCounter.textContent =
+        `${ongoingTasks} ongoing • ${completedTasks} completed`;
+    }
+
+    function addTask(taskText) {
+      const newTask = {
+        id: Date.now(),
+        text: taskText,
+        completed: false
+      };
+
+      tasks.push(newTask);
+      saveTasks();
+      renderTasks();
+    }
+
+    function editTask(taskId) {
+      const selectedTask = tasks.find(function(task) {
+        return task.id === taskId;
+      });
+
+      if (!selectedTask) return;
+
+      todoInput.value = selectedTask.text;
+      editTaskId = taskId;
+      submitBtn.textContent = "Update Experiment";
+      todoInput.focus();
+    }
+
+    function updateTask(taskText) {
+      tasks = tasks.map(function(task) {
+        if (task.id === editTaskId) {
+          return {
+            ...task,
+            text: taskText
+          };
+        }
+
+        return task;
+      });
+
+      editTaskId = null;
+      submitBtn.textContent = "Add Experiment";
+
+      saveTasks();
+      renderTasks();
+    }
+
+    function deleteTask(taskId) {
+      tasks = tasks.filter(function(task) {
+        return task.id !== taskId;
+      });
+
+      saveTasks();
+      renderTasks();
+    }
+
+    function toggleTask(taskId) {
+      tasks = tasks.map(function(task) {
+        if (task.id === taskId) {
+          return {
+            ...task,
+            completed: !task.completed
+          };
+        }
+
+        return task;
+      });
+
+      saveTasks();
+      renderTasks();
+    }
+
+    function escapeHTML(text) {
+      const div = document.createElement("div");
+      div.textContent = text;
+      return div.innerHTML;
+    }
+
+    todoForm.addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      const taskText = todoInput.value.trim();
+
+      if (taskText === "") {
+        todoInput.focus();
+        return;
+      }
+
+      if (editTaskId !== null) {
+        updateTask(taskText);
+      } else {
+        addTask(taskText);
+      }
+
+      todoInput.value = "";
+      todoInput.focus();
+    });
+
+    taskList.addEventListener("click", function(event) {
+      const button = event.target.closest("button");
+
+      if (!button) return;
+
+      const taskId = Number(button.dataset.id);
+      const action = button.dataset.action;
+
+      if (action === "edit") {
+        editTask(taskId);
+      }
+
+      if (action === "delete") {
+        deleteTask(taskId);
+      }
+    });
+
+    taskList.addEventListener("change", function(event) {
+      if (!event.target.classList.contains("task-check")) {
+        return;
+      }
+
+      const taskId = Number(event.target.dataset.id);
+      toggleTask(taskId);
+    });
+
+    clearCompletedBtn.addEventListener("click", function() {
+      tasks = tasks.filter(function(task) {
+        return !task.completed;
+      });
+
+      saveTasks();
+      renderTasks();
+    });
+
+    renderTasks();
+  </script>
+
+</body>
+</html>
