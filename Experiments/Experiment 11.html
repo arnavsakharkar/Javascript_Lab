@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Class Scheduler & Countdown</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            background: #f3f5f8;
+            color: #26364d;
+            min-height: 100vh;
+            padding: 25px 15px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 22px;
+            margin-bottom: 16px;
+            color: #25364e;
+        }
+
+        .card {
+            background: #ffffff;
+            border-radius: 10px;
+            padding: 18px;
+            margin-bottom: 14px;
+            box-shadow: 0 3px 12px rgba(0, 0, 0, 0.06);
+            text-align: center;
+        }
+
+        .card-title {
+            font-size: 13px;
+            font-weight: bold;
+            color: #4b5d78;
+            margin-bottom: 12px;
+        }
+
+        .current-time {
+            font-size: 29px;
+            font-weight: bold;
+            color: #2864f6;
+        }
+
+        .upcoming-class {
+            font-size: 13px;
+            font-weight: bold;
+            color: #4b5d78;
+            margin-bottom: 10px;
+        }
+
+        .timer {
+            font-size: 32px;
+            font-weight: bold;
+            color: #2864f6;
+            margin-bottom: 10px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 7px;
+            margin-bottom: 9px;
+        }
+
+        button {
+            background: #2864f6;
+            color: white;
+            border: none;
+            padding: 9px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: background 0.2s;
+        }
+
+        button:hover {
+            background: #1749c7;
+        }
+
+        button:active {
+            transform: scale(0.97);
+        }
+
+        .custom-timer {
+            display: flex;
+            justify-content: center;
+            gap: 7px;
+            margin-bottom: 10px;
+        }
+
+        input {
+            width: 130px;
+            padding: 9px;
+            border: 1px solid #d7dce5;
+            border-radius: 5px;
+            font-size: 12px;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #2864f6;
+        }
+
+        .status {
+            font-size: 12px;
+            color: #20a464;
+            min-height: 15px;
+        }
+
+        .routine {
+            text-align: left;
+        }
+
+        .routine .card-title {
+            text-align: center;
+        }
+
+        .routine-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 0;
+            border-bottom: 1px solid #edf0f4;
+            font-size: 12px;
+        }
+
+        .routine-item:last-child {
+            border-bottom: none;
+        }
+
+        .subject {
+            color: #27364b;
+            font-weight: bold;
+        }
+
+        .room {
+            color: #66758b;
+            white-space: nowrap;
+        }
+
+        .duration {
+            color: #46566e;
+            min-width: 28px;
+            text-align: right;
+        }
+
+        .mode {
+            text-align: center;
+            background: #e5eaf2;
+            color: #52627a;
+            border-radius: 15px;
+            padding: 7px 12px;
+            font-size: 11px;
+            width: fit-content;
+            margin: 0 auto;
+        }
+
+        .active-class {
+            background: #e8f8ef;
+            border-radius: 5px;
+        }
+
+        @media (max-width: 400px) {
+            body {
+                padding: 18px 10px;
+            }
+
+            h1 {
+                font-size: 19px;
+            }
+
+            .current-time {
+                font-size: 26px;
+            }
+
+            .timer {
+                font-size: 29px;
+            }
+
+            .card {
+                padding: 15px;
+            }
+
+            button {
+                padding: 9px 12px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="container">
+
+        <h1>Class Scheduler & Countdown</h1>
+
+        <!-- Current Time Card -->
+        <div class="card">
+            <div class="card-title">Current Time</div>
+            <div class="current-time" id="currentTime">00:00:00 AM</div>
+        </div>
+
+        <!-- Countdown Card -->
+        <div class="card">
+
+            <div class="upcoming-class" id="upcomingClass">
+                Upcoming: Web Technologies (Lab 3)
+            </div>
+
+            <div class="timer" id="timer">00:00</div>
+
+            <div class="buttons">
+                <button onclick="startTimer()">Start</button>
+                <button onclick="pauseTimer()">Pause</button>
+                <button onclick="resetTimer()">Reset</button>
+            </div>
+
+            <div class="custom-timer">
+                <input
+                    type="number"
+                    id="secondsInput"
+                    placeholder="Enter seconds"
+                    min="1"
+                    max="86400"
+                >
+                <button onclick="setTimer()">Set</button>
+            </div>
+
+            <div class="status" id="status">
+                Ready for class!
+            </div>
+
+        </div>
+
+        <!-- Class Routine Card -->
+        <div class="card routine">
+
+            <div class="card-title">Class Routine</div>
+
+            <div class="routine-item" id="class0">
+                <span class="subject">Web Technologies</span>
+                <span class="room">(Lab 3)</span>
+                <span class="duration">15s</span>
+            </div>
+
+            <div class="routine-item" id="class1">
+                <span class="subject">Database Systems</span>
+                <span class="room">(Room 204)</span>
+                <span class="duration">20s</span>
+            </div>
+
+            <div class="routine-item" id="class2">
+                <span class="subject">Computer Networks</span>
+                <span class="room">(Lab 1)</span>
+                <span class="duration">25s</span>
+            </div>
+
+        </div>
+
+        <div class="mode">
+            Direct File Mode: HTML, CSS & JS
+        </div>
+
+    </div>
+
+    <script>
+        // Class information
+        const classes = [
+            {
+                name: "Web Technologies",
+                room: "Lab 3",
+                duration: 15
+            },
+            {
+                name: "Database Systems",
+                room: "Room 204",
+                duration: 20
+            },
+            {
+                name: "Computer Networks",
+                room: "Lab 1",
+                duration: 25
+            }
+        ];
+
+        let currentClassIndex = 0;
+        let remainingSeconds = classes[0].duration;
+        let timerInterval = null;
+        let timerRunning = false;
+        let customDuration = null;
+
+        // Display current time
+        function updateClock() {
+            const now = new Date();
+
+            const time = now.toLocaleTimeString("en-US", {
+                hour: "numeric",
+                minute: "2-digit",
+                second: "2-digit",
+                hour12: true
+            });
+
+            document.getElementById("currentTime").textContent = time;
+        }
+
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        // Convert seconds into MM:SS format
+        function formatTime(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secs = seconds % 60;
+
+            return String(minutes).padStart(2, "0") + ":" +
+                   String(secs).padStart(2, "0");
+        }
+
+        // Update timer display
+        function updateTimerDisplay() {
+            document.getElementById("timer").textContent =
+                formatTime(remainingSeconds);
+        }
+
+        // Update upcoming class information
+        function updateUpcomingClass() {
+            const upcoming = classes[currentClassIndex];
+
+            document.getElementById("upcomingClass").textContent =
+                "Upcoming: " + upcoming.name + " (" + upcoming.room + ")";
+
+            // Highlight the active class in the routine
+            classes.forEach((item, index) => {
+                const row = document.getElementById("class" + index);
+
+                row.classList.toggle(
+                    "active-class",
+                    index === currentClassIndex
+                );
+            });
+        }
+
+        // Start countdown
+        function startTimer() {
+            if (timerRunning) {
+                return;
+            }
+
+            if (remainingSeconds <= 0) {
+                document.getElementById("status").textContent =
+                    "Timer finished! Press Reset to start again.";
+                return;
+            }
+
+            timerRunning = true;
+
+            document.getElementById("status").textContent =
+                "🔔 Started: " + classes[currentClassIndex].name + "!";
+
+            timerInterval = setInterval(function () {
+                if (remainingSeconds > 0) {
+                    remainingSeconds--;
+                    updateTimerDisplay();
+                }
+
+                if (remainingSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    timerInterval = null;
+                    timerRunning = false;
+
+                    document.getElementById("status").textContent =
+                        "✅ Class timer completed!";
+
+                    // Move to the next class automatically
+                    setTimeout(nextClass, 1500);
+                }
+            }, 1000);
+        }
+
+        // Pause countdown
+        function pauseTimer() {
+            if (timerInterval !== null) {
+                clearInterval(timerInterval);
+                timerInterval = null;
+            }
+
+            timerRunning = false;
+
+            document.getElementById("status").textContent =
+                "⏸️ Timer paused.";
+        }
+
+        // Reset countdown
+        function resetTimer() {
+            pauseTimer();
+
+            if (customDuration !== null) {
+                remainingSeconds = customDuration;
+            } else {
+                remainingSeconds = classes[currentClassIndex].duration;
+            }
+
+            updateTimerDisplay();
+
+            document.getElementById("status").textContent =
+                "Timer reset. Ready to start!";
+        }
+
+        // Set custom countdown
+        function setTimer() {
+            const input = document.getElementById("secondsInput");
+            const seconds = Number(input.value);
+
+            if (
+                input.value.trim() === "" ||
+                !Number.isInteger(seconds) ||
+                seconds < 1 ||
+                seconds > 86400
+            ) {
+                document.getElementById("status").textContent =
+                    "Enter a whole number from 1 to 86400.";
+                return;
+            }
+
+            pauseTimer();
+
+            customDuration = seconds;
+            remainingSeconds = seconds;
+
+            updateTimerDisplay();
+
+            document.getElementById("status").textContent =
+                "Custom timer set successfully!";
+
+            input.value = "";
+        }
+
+        // Move to the next class
+        function nextClass() {
+            currentClassIndex =
+                (currentClassIndex + 1) % classes.length;
+
+            customDuration = null;
+            remainingSeconds = classes[currentClassIndex].duration;
+
+            updateUpcomingClass();
+            updateTimerDisplay();
+
+            document.getElementById("status").textContent =
+                "Ready for next class.";
+        }
+
+        // Initialize the application
+        updateUpcomingClass();
+        updateTimerDisplay();
+    </script>
+
+</body>
+</html>
