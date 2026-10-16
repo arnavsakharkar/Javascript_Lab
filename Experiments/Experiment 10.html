@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <title>Student Data Dashboard</title>
+
+  <!-- jQuery -->
+  <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+
+  <style>
+    :root {
+      --primary: #4f46e5;
+      --primary-dark: #4338ca;
+      --secondary: #0891b2;
+      --background: #f1f5f9;
+      --surface: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --success: #15803d;
+      --danger: #dc2626;
+      --shadow: 0 18px 45px rgba(15, 23, 42, 0.08);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      min-height: 100vh;
+      padding: 42px 20px;
+      background:
+        radial-gradient(
+          circle at top right,
+          rgba(79, 70, 229, 0.12),
+          transparent 32%
+        ),
+        var(--background);
+      color: var(--text);
+      font-family: Inter, Arial, sans-serif;
+    }
+
+    .container {
+      width: min(1220px, 100%);
+      margin: 0 auto;
+    }
+
+    .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 24px;
+      margin-bottom: 34px;
+    }
+
+    .eyebrow {
+      margin-bottom: 10px;
+      color: var(--primary);
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 0.16em;
+      text-transform: uppercase;
+    }
+
+    .header h1 {
+      margin-bottom: 10px;
+      color: var(--text);
+      font-size: clamp(2.1rem, 5vw, 3.5rem);
+      letter-spacing: -0.06em;
+      line-height: 1;
+    }
+
+    .header p {
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      padding: 12px 17px;
+      border: 1px solid #bbf7d0;
+      border-radius: 999px;
+      background: #dcfce7;
+      color: var(--success);
+      font-size: 14px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .status::before {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      content: "";
+    }
+
+    .controls {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 22px;
+    }
+
+    .buttons {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    button {
+      border: none;
+      border-radius: 9px;
+      color: white;
+      cursor: pointer;
+      font: inherit;
+      font-weight: 700;
+      padding: 13px 18px;
+      transition: 0.25s ease;
+    }
+
+    button:hover {
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.15);
+      transform: translateY(-2px);
+    }
+
+    button:active {
+      transform: translateY(0);
+    }
+
+    button:disabled {
+      cursor: not-allowed;
+      opacity: 0.6;
+      transform: none;
+    }
+
+    .fetch-button {
+      background: var(--primary);
+    }
+
+    .fetch-button:hover {
+      background: var(--primary-dark);
+    }
+
+    .jquery-button {
+      background: var(--secondary);
+    }
+
+    .search-box {
+      min-width: 300px;
+    }
+
+    .search-box label {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .search-box input {
+      width: 100%;
+      padding: 13px 15px;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      outline: none;
+      background: var(--surface);
+      color: var(--text);
+      font: inherit;
+      transition: 0.25s ease;
+    }
+
+    .search-box input:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.12);
+    }
+
+    .table-card {
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      background: var(--surface);
+      box-shadow: var(--shadow);
+    }
+
+    .table-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      padding: 24px 26px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .table-heading h2 {
+      margin-bottom: 6px;
+      font-size: 21px;
+    }
+
+    .table-heading p {
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .file-name {
+      padding: 8px 12px;
+      border-radius: 6px;
+      background: #eef2ff;
+      color: var(--primary-dark);
+      font-size: 13px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      min-width: 850px;
+      border-collapse: collapse;
+    }
+
+    thead {
+      background: #f8fafc;
+    }
+
+    th {
+      padding: 16px 20px;
+      color: #475569;
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-align: left;
+      text-transform: uppercase;
+    }
+
+    td {
+      padding: 17px 20px;
+      border-top: 1px solid var(--border);
+      color: #475569;
+      font-size: 15px;
+    }
+
+    tbody tr {
+      transition: background 0.2s ease;
+    }
+
+    tbody tr:hover {
+      background: #f8fafc;
+    }
+
+    td:first-child {
+      color: var(--primary);
+      font-weight: 800;
+    }
+
+    .marks {
+      color: var(--success);
+      font-weight: 800;
+    }
+
+    .message {
+      padding: 60px 20px;
+      color: var(--muted);
+      text-align: center;
+    }
+
+    .error {
+      color: var(--danger);
+      font-weight: 700;
+    }
+
+    @media (max-width: 720px) {
+      body {
+        padding: 28px 15px;
+      }
+
+      .header,
+      .controls {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .status {
+        align-self: flex-start;
+      }
+
+      .search-box {
+        min-width: 100%;
+      }
+
+      .table-heading {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="container">
+
+    <header class="header">
+      <div>
+        <div class="eyebrow">Academic Records</div>
+        <h1>Student Dashboard</h1>
+        <p>Manage and explore student records from a JSON data source.</p>
+      </div>
+
+      <div class="status" id="status">Ready</div>
+    </header>
+
+    <section class="controls">
+      <div class="buttons">
+        <button class="fetch-button" id="fetchButton">
+          Load with fetch()
+        </button>
+
+        <button class="jquery-button" id="jqueryButton">
+          Load with $.getJSON()
+        </button>
+      </div>
+
+      <div class="search-box">
+        <label for="searchInput">Search Records</label>
+        <input
+          type="search"
+          id="searchInput"
+          placeholder="Search by name, course, or city..."
+        />
+      </div>
+    </section>
+
+    <section class="table-card">
+      <div class="table-heading">
+        <div>
+          <h2>Student Records</h2>
+          <p id="recordCount">No records loaded</p>
+        </div>
+
+        <div class="file-name">Source: students.json</div>
+      </div>
+
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Course</th>
+              <th>Year</th>
+              <th>City</th>
+              <th>Marks</th>
+            </tr>
+          </thead>
+
+          <tbody id="studentTable">
+            <tr>
+              <td colspan="7">
+                <div class="message">
+                  Click a button above to load student records.
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+  </main>
+
+  <script>
+    const jsonFile = "students.json";
+
+    let students = [];
+
+    const fetchButton = document.getElementById("fetchButton");
+    const jqueryButton = document.getElementById("jqueryButton");
+    const studentTable = document.getElementById("studentTable");
+    const searchInput = document.getElementById("searchInput");
+    const status = document.getElementById("status");
+    const recordCount = document.getElementById("recordCount");
+
+    function showLoading() {
+      status.textContent = "Loading...";
+
+      studentTable.innerHTML = `
+        <tr>
+          <td colspan="7">
+            <div class="message">Loading student records...</div>
+          </td>
+        </tr>
+      `;
+    }
+
+    function showError(error) {
+      console.error(error);
+
+      status.textContent = "Error";
+      status.style.background = "#fee2e2";
+      status.style.borderColor = "#fecaca";
+      status.style.color = "#dc2626";
+
+      studentTable.innerHTML = `
+        <tr>
+          <td colspan="7">
+            <div class="message error">
+              Unable to load students.json.
+            </div>
+          </td>
+        </tr>
+      `;
+
+      recordCount.textContent = "No records found";
+    }
+
+    function displayStudents(data) {
+      if (data.length === 0) {
+        studentTable.innerHTML = `
+          <tr>
+            <td colspan="7">
+              <div class="message">No matching student records found.</div>
+            </td>
+          </tr>
+        `;
+
+        recordCount.textContent = "0 students found";
+        return;
+      }
+
+      studentTable.innerHTML = data.map(student => `
+        <tr>
+          <td>#${student.id}</td>
+          <td>${student.name}</td>
+          <td>${student.email}</td>
+          <td>${student.course}</td>
+          <td>${student.year}</td>
+          <td>${student.city}</td>
+          <td class="marks">${student.marks}%</td>
+        </tr>
+      `).join("");
+
+      recordCount.textContent =
+        `${data.length} student${data.length === 1 ? "" : "s"} found`;
+
+      status.textContent = "Data Loaded";
+      status.style.background = "#dcfce7";
+      status.style.borderColor = "#bbf7d0";
+      status.style.color = "#15803d";
+    }
+
+    function searchStudents() {
+      const searchValue = searchInput.value.toLowerCase().trim();
+
+      const filteredStudents = students.filter(student => {
+        return (
+          student.name.toLowerCase().includes(searchValue) ||
+          student.email.toLowerCase().includes(searchValue) ||
+          student.course.toLowerCase().includes(searchValue) ||
+          student.city.toLowerCase().includes(searchValue)
+        );
+      });
+
+      displayStudents(filteredStudents);
+    }
+
+    async function loadUsingFetch() {
+      showLoading();
+
+      try {
+        const response = await fetch(jsonFile);
+
+        if (!response.ok) {
+          throw new Error("Unable to find students.json");
+        }
+
+        students = await response.json();
+        displayStudents(students);
+      } catch (error) {
+        showError(error);
+      }
+    }
+
+    function loadUsingJQuery() {
+      showLoading();
+
+      $.getJSON(jsonFile)
+        .done(function(data) {
+          students = data;
+          displayStudents(students);
+        })
+        .fail(function(error) {
+          showError(error);
+        });
+    }
+
+    fetchButton.addEventListener("click", loadUsingFetch);
+    jqueryButton.addEventListener("click", loadUsingJQuery);
+    searchInput.addEventListener("input", searchStudents);
+  </script>
+</body>
+</html>
